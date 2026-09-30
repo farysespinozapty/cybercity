@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber City — Guardianes Digitales</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#07111f;--panel:#0d1b2d;--panel2:#10243b;--line:#1c3a59;
+  --text:#eef7ff;--muted:#91a9bf;--cyan:#27d8ff;--green:#41e38b;
+  --yellow:#ffd45a;--red:#ff5575;--purple:#a67cff;
+}
+body{
+  margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:
+  radial-gradient(circle at 20% 0%,#12375a 0,#07111f 35%,#040a13 100%);
+  color:var(--text);min-height:100vh;
+}
+button{font:inherit}
+.app{max-width:1250px;margin:auto;padding:18px}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:15px;
+  background:rgba(13,27,45,.9);border:1px solid var(--line);border-radius:18px;
+  padding:14px 18px;box-shadow:0 12px 35px rgba(0,0,0,.25);position:sticky;top:10px;z-index:10;
+  backdrop-filter:blur(10px)
+}
+.brand{display:flex;align-items:center;gap:12px}.logo{font-size:34px}
+.brand h1{font-size:20px;margin:0}.brand small{color:var(--muted)}
+.stats{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.stat{background:#091726;border:1px solid var(--line);padding:8px 12px;border-radius:12px;text-align:center;min-width:88px}
+.stat b{display:block;font-size:18px}.stat span{font-size:11px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:1.55fr .85fr;gap:18px;margin-top:18px}
+.card{background:rgba(13,27,45,.94);border:1px solid var(--line);border-radius:20px;box-shadow:0 14px 35px rgba(0,0,0,.22)}
+.city-card{padding:16px;overflow:hidden}
+.city-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.city-head h2{margin:0;font-size:20px}.city-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.progress-wrap{min-width:180px}.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:5px}
+.progress{height:10px;background:#07111f;border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--yellow),var(--green));transition:.4s}
+.city{
+  min-height:590px;border-radius:16px;border:1px solid #1d4666;position:relative;overflow:hidden;
+  background:
+   linear-gradient(180deg,rgba(10,40,67,.3),rgba(3,10,18,.7)),
+   repeating-linear-gradient(0deg,transparent 0 48px,rgba(39,216,255,.04) 49px 50px),
+   repeating-linear-gradient(90deg,transparent 0 68px,rgba(39,216,255,.035) 69px 70px);
+}
+.city:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(39,216,255,.08),transparent 48%);pointer-events:none}
+.road{position:absolute;background:#07111f;border:1px solid #16334d}
+.r1{height:55px;left:0;right:0;top:48%}.r2{width:55px;top:0;bottom:0;left:49%}
+.road:after{content:"";position:absolute;inset:25px 0;border-top:2px dashed #34536c}
+.r2:after{inset:0 25px;border-left:2px dashed #34536c;border-top:0}
+.building{
+ position:absolute;width:145px;min-height:118px;border:1px solid #2a5777;border-radius:16px;
+ background:linear-gradient(145deg,#102b45,#0b1b2d);padding:13px;cursor:pointer;
+ transition:.2s;box-shadow:0 8px 18px rgba(0,0,0,.25);z-index:2
+}
+.building:hover{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 0 22px rgba(39,216,255,.18)}
+.building .emoji{font-size:30px}.building h3{font-size:14px;margin:6px 0 3px}.building p{font-size:11px;color:var(--muted);margin:0}
+.badge{display:inline-block;margin-top:8px;padding:3px 7px;border-radius:99px;font-size:10px;font-weight:800}
+.safe{background:rgba(65,227,139,.12);color:var(--green);border:1px solid rgba(65,227,139,.3)}
+.warn{background:rgba(255,212,90,.12);color:var(--yellow);border:1px solid rgba(255,212,90,.3)}
+.danger{background:rgba(255,85,117,.12);color:var(--red);border:1px solid rgba(255,85,117,.3)}
+.b1{left:5%;top:8%}.b2{right:5%;top:8%}.b3{left:5%;bottom:8%}.b4{right:5%;bottom:8%}
+.b5{left:calc(50% - 72px);top:10px}.b6{left:calc(50% - 72px);bottom:10px}
+.side{padding:16px;display:flex;flex-direction:column;gap:13px}
+.mission{padding:15px}.mission h2{font-size:17px;margin:0 0 7px}.mission p{font-size:13px;line-height:1.5;color:var(--muted);margin:0}
+.threat{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px;background:#091726;border:1px solid var(--line);border-radius:12px}
+.threat-icon{font-size:28px}.threat b{font-size:13px}.threat small{display:block;color:var(--muted);margin-top:2px}
+.action{margin-top:12px;width:100%;border:0;border-radius:11px;padding:11px;background:linear-gradient(135deg,#16bddd,#4779ff);color:white;font-weight:800;cursor:pointer}
+.action:hover{filter:brightness(1.1)}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.mini{padding:11px;background:#091726;border:1px solid var(--line);border-radius:12px}.mini span{font-size:11px;color:var(--muted)}.mini b{display:block;margin-top:4px}
+.log{max-height:170px;overflow:auto;padding:10px 12px}.log p{font-size:11px;color:var(--muted);margin:7px 0}.log p strong{color:var(--text)}
+.overlay{position:fixed;inset:0;background:rgba(1,7,13,.78);display:none;align-items:center;justify-content:center;padding:18px;z-index:30;backdrop-filter:blur(7px)}
+.modal{width:min(680px,100%);background:#0d1b2d;border:1px solid #2b5878;border-radius:22px;padding:22px;box-shadow:0 25px 80px rgba(0,0,0,.5)}
+.modal h2{margin:0 0 7px}.modal>p{color:var(--muted);line-height:1.5}.choices{display:grid;gap:10px;margin-top:17px}
+.choice{padding:13px;text-align:left;border:1px solid #2a4d69;background:#091726;color:var(--text);border-radius:12px;cursor:pointer}
+.choice:hover{border-color:var(--cyan);background:#0d2136}
+.feedback{padding:12px;border-radius:12px;margin-top:12px;display:none;line-height:1.45;font-size:13px}
+.feedback.ok{display:block;background:rgba(65,227,139,.1);border:1px solid rgba(65,227,139,.3);color:#baf7d5}
+.feedback.bad{display:block;background:rgba(255,85,117,.1);border:1px solid rgba(255,85,117,.3);color:#ffc2ce}
+.modal-actions{display:flex;gap:10px;margin-top:15px}.secondary{background:#172a40;border:1px solid #294762;color:white;padding:10px 14px;border-radius:11px;cursor:pointer}
+.toast{position:fixed;right:20px;bottom:20px;z-index:50;background:#0d1b2d;border:1px solid var(--cyan);padding:12px 16px;border-radius:12px;display:none;box-shadow:0 10px 35px #0008}
+.shake{animation:shake .35s}.pulse{animation:pulse .8s}
+@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+@keyframes pulse{50%{box-shadow:0 0 30px rgba(39,216,255,.45)}}
+
+.glossary-modal{max-height:88vh;overflow:auto}
+.glossary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.term{background:#091726;border:1px solid #244763;border-radius:13px;padding:12px}
+.term strong{display:block;color:var(--cyan);margin-bottom:5px}
+.term span{font-size:12px;line-height:1.45;color:var(--muted)}
+.learn-box{margin-top:12px;background:linear-gradient(135deg,rgba(39,216,255,.08),rgba(166,124,255,.08));border:1px solid #285372;border-radius:13px;padding:12px}
+.learn-box strong{color:var(--cyan);display:block;margin-bottom:5px}
+.learn-box span{font-size:12px;color:#bfd0df;line-height:1.5}
+.choice:disabled{opacity:.7;cursor:default}
+@media(max-width:600px){.glossary-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.city{min-height:610px}.topbar{position:static}}
+@media(max-width:600px){.app{padding:9px}.stats{display:grid;grid-template-columns:repeat(2,1fr)}.topbar{align-items:flex-start;flex-direction:column}.progress-wrap{width:100%}.building{width:126px;min-height:112px}.city{min-height:630px}.b1{left:3%;top:9%}.b2{right:3%;top:9%}.b3{left:3%;bottom:9%}.b4{right:3%;bottom:9%}.b5,.b6{left:calc(50% - 63px)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand"><div class="logo">🛡️</div><div><h1>CYBER CITY</h1><small>Guardianes Digitales</small></div></div>
+  <div class="stats">
+    <div class="stat"><b id="score">0</b><span>PUNTOS</span></div>
+    <div class="stat"><b id="level">1</b><span>NIVEL</span></div>
+    <div class="stat"><b id="missions">0/6</b><span>MISIONES</span></div>
+    <div class="stat"><b id="timer">∞</b><span>TIEMPO</span></div>
+  </div>
+</header>
+
+<main class="layout">
+<section class="card city-card">
+  <div class="city-head">
+    <div><h2>🌆 Tu ciudad</h2><p>Haz clic en los edificios para protegerlos.</p></div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Seguridad de Cyber City</span><b id="securityText">0%</b></div>
+      <div class="progress"><i id="securityBar"></i></div>
+    </div>
+  </div>
+  <div class="city" id="city">
+    <div class="road r1"></div><div class="road r2"></div>
+    <div class="building b1" data-zone="bank"><div class="emoji">🏦</div><h3>Banco Central</h3><p>Protege cuentas y pagos.</p><span class="badge danger" id="badge-bank">EN RIESGO</span></div>
+    <div class="building b2" data-zone="school"><div class="emoji">🏫</div><h3>Escuela Digital</h3><p>Detecta mensajes engañosos.</p><span class="badge danger" id="badge-school">EN RIESGO</span></div>
+    <div class="building b3" data-zone="home"><div class="emoji">🏠</div><h3>Zona Residencial</h3><p>Protege hogares y Wi-Fi.</p><span class="badge danger" id="badge-home">EN RIESGO</span></div>
+    <div class="building b4" data-zone="mall"><div class="emoji">🛒</div><h3>Centro Comercial</h3><p>Compra sin caer en estafas.</p><span class="badge danger" id="badge-mall">EN RIESGO</span></div>
+    <div class="building b5" data-zone="hospital"><div class="emoji">🏥</div><h3>Hospital</h3><p>Cuida datos y permisos.</p><span class="badge danger" id="badge-hospital">EN RIESGO</span></div>
+    <div class="building b6" data-zone="office"><div class="emoji">🏢</div><h3>Empresas</h3><p>Defiende dispositivos.</p><span class="badge danger" id="badge-office">EN RIESGO</span></div>
+  </div>
+</section>
+
+<aside class="card side">
+  <div class="mission">
+    <h2>🎯 Misión actual</h2>
+    <p id="missionText">Haz clic en cualquier edificio para comenzar tu primera misión.</p>
+    <div class="threat"><div class="threat-icon" id="threatIcon">⚠️</div><div><b id="threatName">Amenazas detectadas</b><small id="threatDesc">La ciudad necesita tu ayuda.</small></div></div>
+    <button class="action" id="startBtn">🚀 Comenzar misión</button>
+  </div>
+  <div class="mini-grid">
+    <div class="mini"><span>🏆 Racha</span><b id="streak">0</b></div>
+    <div class="mini"><span>🛡️ Zonas seguras</span><b id="safeZones">0/6</b></div>
+  </div>
+  <div class="mission">
+    <h2>📡 Centro de alertas</h2>
+    <div class="log" id="log"><p><strong>Sistema:</strong> Bienvenido, Guardián. La ciudad está esperando.</p></div>
+  </div>
+  <button class="secondary" id="glossaryBtn">📚 Diccionario de ciberseguridad</button>
+  <button class="secondary" id="resetBtn">↻ Reiniciar partida</button>
+</aside>
+</main>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle">Misión</h2>
+    <p id="modalQuestion"></p>
+    <div id="learnBox" class="learn-box" style="display:none"></div>
+    <div class="choices" id="choices"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="modal-actions">
+      <button class="action" id="nextBtn" style="display:none">Continuar</button>
+      <button class="secondary" id="closeBtn">Cerrar</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="glossaryOverlay">
+  <div class="modal glossary-modal">
+    <h2>📚 Diccionario de Ciberseguridad</h2>
+    <p>Estos conceptos aparecen durante Cyber City. No necesitas conocimientos técnicos: aquí los explicamos de forma sencilla.</p>
+    <div class="glossary-grid" id="glossaryGrid"></div>
+    <div class="modal-actions"><button class="secondary" id="glossaryClose">Cerrar</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+
+const definitions = {
+ "Contraseña": "Una palabra, frase o combinación de caracteres que sirve para demostrar que una cuenta te pertenece.",
+ "Contraseña única": "Una contraseña que utilizas solamente en una cuenta. Así, si una cuenta se ve comprometida, las demás siguen protegidas.",
+ "MFA": "Autenticación multifactor. Es una segunda comprobación además de la contraseña, por ejemplo un código en tu teléfono.",
+ "Phishing": "Un engaño en el que alguien se hace pasar por una persona o empresa confiable para intentar obtener información, dinero o acceso.",
+ "Enlace": "Texto o botón que te lleva a otra página. Antes de abrir uno sospechoso, conviene comprobar hacia dónde dirige.",
+ "Dominio": "La parte principal de una dirección web que identifica un sitio, como el nombre de una empresa dentro de su página.",
+ "Wi‑Fi": "Tecnología que permite conectar dispositivos a una red sin usar cables. Una red Wi‑Fi no es automáticamente segura.",
+ "Router": "El dispositivo que conecta tu hogar u oficina con la red y permite que varios dispositivos se comuniquen.",
+ "Malware": "Programa creado para realizar acciones dañinas o no deseadas, como robar información, alterar archivos o espiar.",
+ "Permisos": "Autorizaciones que una aplicación solicita para acceder a funciones o información del dispositivo, como cámara, ubicación o contactos.",
+ "Privacidad": "La capacidad de controlar qué información personal compartes, con quién y para qué se utiliza.",
+ "Datos personales": "Información que puede estar relacionada contigo, como tu nombre, correo, ubicación, fotografías o identificadores.",
+ "Actualización": "Una nueva versión de un programa que puede corregir errores, añadir funciones y solucionar vulnerabilidades de seguridad.",
+ "Vulnerabilidad": "Una debilidad en un sistema, programa o dispositivo que podría ser aprovechada para causar un problema.",
+ "Antivirus": "Software que ayuda a detectar, bloquear y eliminar determinados programas maliciosos.",
+ "Firewall": "Una barrera de seguridad que controla determinadas conexiones de red y puede bloquear tráfico no autorizado.",
+ "HTTPS": "Una forma de conexión web cifrada. Ayuda a proteger la información que viaja entre tu navegador y el sitio, aunque por sí solo no garantiza que el sitio sea legítimo.",
+ "Estafa": "Un engaño diseñado para conseguir dinero, información o alguna ventaja de manera fraudulenta.",
+ "Copia de seguridad": "Una copia de archivos importantes guardada en otro lugar para poder recuperarlos si se pierden, dañan o cifran.",
+ "Cifrado": "Una técnica que transforma información para que no pueda entenderse fácilmente sin la clave adecuada."
+};
+
+const missions = {
+ bank:{
+  title:"🏦 Banco Central — Protege una cuenta",
+  icon:"🔓", threat:"Password Breaker", desc:"Una cuenta está usando una contraseña demasiado débil.", learn:[["Contraseña","Una clave que protege una cuenta."],["MFA","Una segunda comprobación además de la contraseña."],["Contraseña única","Una contraseña usada solamente en una cuenta."]],
+  questions:[
+   {q:"Un usuario tiene la contraseña «12345678». ¿Qué debería hacer?",opts:["Mantenerla porque es fácil de recordar","Cambiarla por una contraseña larga y única","Usarla también en sus redes sociales"],a:1,good:"Exacto. Una contraseña larga y única reduce el riesgo de que una filtración afecte varias cuentas.",bad:"Las contraseñas simples o reutilizadas facilitan el acceso no autorizado."},
+   {q:"¿Qué añade una capa extra de protección a una cuenta?",opts:["Desactivar las alertas","Autenticación multifactor (MFA)","Compartir el código de acceso"],a:1,good:"Correcto. MFA añade una segunda comprobación además de la contraseña.",bad:"Desactivar alertas o compartir códigos elimina protecciones importantes."}
+  ]
+ },
+ school:{
+  title:"🏫 Escuela Digital — Detecta el phishing",
+  icon:"🎣", threat:"Phisher", desc:"Un mensaje intenta engañar a los estudiantes.", learn:[["Phishing","Un engaño que intenta obtener información haciéndose pasar por alguien confiable."],["Enlace","Un botón o texto que te lleva a otra página."],["Dominio","La parte de una dirección web que ayuda a identificar el sitio."]],
+  questions:[
+   {q:"Recibes: «¡Ganaste un premio! Haz clic aquí y escribe tu contraseña». ¿Qué haces?",opts:["Hacer clic inmediatamente","Compartirlo con tus amigos","No abrirlo y verificar el mensaje por un canal oficial"],a:2,good:"Muy bien. Los mensajes urgentes que piden credenciales son una señal de alerta.",bad:"Un premio inesperado y una solicitud de contraseña son señales frecuentes de phishing."},
+   {q:"¿Qué elemento merece especial atención en un correo sospechoso?",opts:["El enlace y el dominio al que dirige","El color del fondo","La cantidad de emojis"],a:0,good:"Correcto. Revisar el enlace y el dominio puede revelar una página falsa.",bad:"Los detalles visuales pueden engañar; conviene comprobar el enlace y el remitente."}
+  ]
+ },
+ home:{
+  title:"🏠 Zona Residencial — Asegura tu Wi‑Fi",
+  icon:"📡", threat:"Wi-Fi Intruder", desc:"Un router doméstico necesita protección.", learn:[["Wi‑Fi","Conexión inalámbrica para dispositivos."],["Router","Equipo que conecta tus dispositivos a la red."],["Actualización","Nueva versión que puede corregir problemas de seguridad."]],
+  questions:[
+   {q:"¿Cuál es una medida recomendable para el router?",opts:["Dejar la contraseña predeterminada","Cambiar credenciales predeterminadas y mantener el firmware actualizado","Publicar la contraseña en una red social"],a:1,good:"Correcto. Cambiar credenciales predeterminadas y actualizar el router mejora su seguridad.",bad:"Las credenciales predeterminadas o públicas pueden facilitar accesos no autorizados."},
+   {q:"En una red Wi‑Fi pública, ¿qué conviene hacer antes de introducir datos sensibles?",opts:["Confiar automáticamente en cualquier red","Verificar la red y usar conexiones seguras","Desactivar todas las actualizaciones"],a:1,good:"Exacto. Hay que verificar la red y usar conexiones seguras, especialmente para datos sensibles.",bad:"Una red pública desconocida no debe considerarse segura por defecto."}
+  ]
+ },
+ mall:{
+  title:"🛒 Centro Comercial — Compra segura",
+  icon:"💳", threat:"Online Scammer", desc:"Hay una tienda con una oferta demasiado buena.", learn:[["HTTPS","Conexión web cifrada; no significa por sí sola que una tienda sea legítima."],["Estafa","Engaño para conseguir dinero o información."],["Datos personales","Información relacionada contigo que debe protegerse."]],
+  questions:[
+   {q:"Una tienda vende un producto muy caro a un precio increíble y solo acepta una transferencia a una cuenta personal. ¿Qué haces?",opts:["Pagar rápido antes de que se acabe","Investigar la tienda y elegir un método de pago apropiado","Enviar una foto de tu documento"],a:1,good:"Correcto. Investigar al vendedor y revisar el método de pago ayuda a reducir riesgos.",bad:"La urgencia, el precio irreal y métodos de pago inusuales son señales para detenerse y verificar."},
+   {q:"¿Qué debes comprobar antes de comprar?",opts:["Solo el diseño de la página","La dirección web, reputación del vendedor y condiciones de compra","Que tenga muchos emojis"],a:1,good:"Muy bien. Revisar varios indicadores da una imagen más completa del sitio.",bad:"Una página bonita no demuestra que una tienda sea legítima."}
+  ]
+ },
+ hospital:{
+  title:"🏥 Hospital — Protege los datos",
+  icon:"🕵️", threat:"Data Thief", desc:"Una aplicación solicita permisos innecesarios.", learn:[["Permisos","Autorizaciones que una aplicación pide para acceder a funciones o datos."],["Privacidad","Control sobre qué información personal compartes."],["Datos personales","Información como nombre, ubicación, fotos o correo."]],
+  questions:[
+   {q:"Una aplicación de linterna pide acceso a contactos, micrófono y ubicación. ¿Qué haces?",opts:["Conceder todo sin revisar","Revisar si los permisos son necesarios y negar los innecesarios","Compartir además tus contraseñas"],a:1,good:"Correcto. Los permisos deben corresponder a la función de la aplicación.",bad:"Dar permisos innecesarios aumenta la exposición de tus datos."},
+   {q:"¿Qué principio ayuda a proteger la información personal?",opts:["Compartir la mayor cantidad posible","Dar acceso solo a quien lo necesita","Usar la misma cuenta para todo"],a:1,good:"Exacto. Limitar el acceso reduce la exposición de la información.",bad:"El acceso debe limitarse a lo necesario y apropiado."}
+  ]
+ },
+ office:{
+  title:"🏢 Empresas — Defiende los dispositivos",
+  icon:"🦠", threat:"Malware", desc:"Un archivo sospechoso apareció en la red.", learn:[["Malware","Programa creado para realizar acciones dañinas o no deseadas."],["Antivirus","Programa que ayuda a detectar y bloquear determinados programas maliciosos."],["Vulnerabilidad","Debilidad que podría ser aprovechada para causar un problema."],["Copia de seguridad","Copia de archivos que permite recuperarlos si se pierden o dañan."]],
+  questions:[
+   {q:"Llega un archivo inesperado desde un remitente desconocido. ¿Qué haces?",opts:["Abrirlo para ver qué contiene","Verificar el remitente y no abrirlo si no es confiable","Desactivar el antivirus"],a:1,good:"Correcto. Verificar antes de abrir archivos inesperados reduce el riesgo de malware.",bad:"Abrir archivos desconocidos o desactivar la protección aumenta el riesgo."},
+   {q:"¿Por qué son importantes las actualizaciones de software?",opts:["Solo cambian los iconos","Pueden corregir vulnerabilidades y mejorar la seguridad","Hacen innecesario el antivirus"],a:1,good:"Muy bien. Las actualizaciones pueden corregir fallos de seguridad conocidos.",bad:"Las actualizaciones pueden incluir correcciones importantes de seguridad."}
+  ]
+ }
+};
+
+let state={score:0,security:0,missions:0,streak:0,zoneDone:{},currentZone:null,q:0,started:0,time:0,timer:null};
+
+const $=id=>document.getElementById(id);
+
+function showLearn(zone){
+ const box=$("learnBox"), m=missions[zone];
+ if(!m.learn){box.style.display="none";return}
+ box.style.display="block";
+ box.innerHTML="<strong>💡 Aprende mientras juegas</strong><span>"+m.learn.map(x=>"<b>"+x[0]+":</b> "+x[1]).join(" &nbsp;•&nbsp; ")+"</span>";
+}
+function renderGlossary(){
+ const grid=$("glossaryGrid"); grid.innerHTML="";
+ Object.entries(definitions).forEach(([term,desc])=>{
+   const d=document.createElement("div");d.className="term";
+   d.innerHTML="<strong>"+term+"</strong><span>"+desc+"</span>";grid.appendChild(d);
+ });
+}
+
+function render(){
+ $("score").textContent=state.score;
+ $("missions").textContent=state.missions+"/6";
+ $("securityText").textContent=state.security+"%";
+ $("securityBar").style.width=state.security+"%";
+ $("streak").textContent=state.streak;
+ $("safeZones").textContent=Object.keys(state.zoneDone).length+"/6";
+ const lvl=state.security>=80?3:state.security>=40?2:1;
+ $("level").textContent=lvl;
+ Object.keys(missions).forEach(z=>{
+   const b=$("badge-"+z); const done=state.zoneDone[z];
+   b.textContent=done?"PROTEGIDA":"EN RIESGO";
+   b.className="badge "+(done?"safe":"danger");
+ });
+}
+function log(msg){const p=document.createElement("p");p.innerHTML=msg;$("log").prepend(p)}
+function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
+function openMission(zone){
+ state.currentZone=zone;state.q=0;
+ const m=missions[zone];
+ $("missionText").textContent=m.title;
+ $("threatIcon").textContent=m.icon;$("threatName").textContent=m.threat;$("threatDesc").textContent=m.desc;
+ $("startBtn").textContent=state.zoneDone[zone]?"🔁 Repetir misión":"🚀 Comenzar misión";
+ $("startBtn").onclick=()=>startMission(zone);
+ toast("Zona seleccionada: "+m.title);
+}
+function startMission(zone){
+ state.currentZone=zone;state.q=0;state.started=Date.now();
+ clearInterval(state.timer);state.time=0;
+ state.timer=setInterval(()=>{$("timer").textContent=Math.floor((Date.now()-state.started)/1000)+"s"},250);
+ showQuestion();
+}
+function showQuestion(){
+ const m=missions[state.currentZone], item=m.questions[state.q];
+ showLearn(state.currentZone);
+ $("modalTitle").textContent=m.title+"  •  "+(state.q+1)+"/"+m.questions.length;
+ $("modalQuestion").textContent=item.q;
+ $("choices").innerHTML="";
+ $("feedback").className="feedback";$("feedback").style.display="none";
+ $("nextBtn").style.display="none";
+ item.opts.forEach((o,i)=>{
+   const btn=document.createElement("button");btn.className="choice";btn.textContent=(String.fromCharCode(65+i))+". "+o;
+   btn.onclick=()=>answer(i);$("choices").appendChild(btn);
+ });
+ $("overlay").style.display="flex";
+}
+function answer(i){
+ const m=missions[state.currentZone],item=m.questions[state.q];
+ [...$("choices").children].forEach(b=>b.disabled=true);
+ const correct=i===item.a;
+ $("feedback").className="feedback "+(correct?"ok":"bad");
+ $("feedback").style.display="block";
+ $("feedback").textContent=(correct?"✅ ¡Correcto! ":"❌ No es la opción más segura. ")+(correct?item.good:item.bad);
+ if(correct){
+   const elapsed=Math.floor((Date.now()-state.started)/1000);
+   const bonus=Math.max(10,70-elapsed*2);
+   state.score+=50+bonus;state.streak++;
+   toast("+"+(50+bonus)+" puntos");
+ }else{state.score=Math.max(0,state.score-20);state.streak=0}
+ $("nextBtn").style.display="block";
+ $("nextBtn").textContent=state.q===m.questions.length-1?"🏙️ Volver a la ciudad":"➡️ Siguiente";
+ $("nextBtn").onclick=()=>{
+   if(state.q<m.questions.length-1){state.q++;showQuestion()}else finishMission(correct)
+ };
+ render();
+}
+function finishMission(lastCorrect){
+ clearInterval(state.timer);$("timer").textContent="∞";
+ const z=state.currentZone;
+ if(!state.zoneDone[z]){
+   state.zoneDone[z]=true;state.missions++;
+   state.security=Math.min(100,state.security+Math.round(100/6));
+   state.score+=100;
+   log("<strong>Ciudad:</strong> "+missions[z].title+" ahora está protegida. +100 puntos.");
+ }else{state.score+=25;log("<strong>Entrenamiento:</strong> repetiste "+missions[z].title+". +25 puntos.")}
+ $("overlay").style.display="none";render();
+ if(state.security>=100){winGame();return}
+ $("missionText").textContent="¡Zona protegida! Elige otro edificio para continuar.";
+ $("threatIcon").textContent="🛡️";$("threatName").textContent="Amenaza neutralizada";$("threatDesc").textContent="La ciudad está más segura.";
+ $("startBtn").textContent="🚀 Nueva misión";
+ toast("Zona protegida 🛡️");
+}
+function winGame(){
+ $("missionText").textContent="🏆 ¡Cyber City está protegida al 100%!";
+ $("threatIcon").textContent="🏆";$("threatName").textContent="Guardián Supremo";$("threatDesc").textContent="Has completado todas las zonas.";
+ $("startBtn").textContent="🔁 Jugar de nuevo";
+ $("startBtn").onclick=reset;
+ log("<strong>Victoria:</strong> ¡Cyber City alcanzó el 100% de seguridad!");
+ document.querySelector(".city").classList.add("pulse");
+}
+function reset(){
+ state={score:0,security:0,missions:0,streak:0,zoneDone:{},currentZone:null,q:0,started:0,time:0,timer:null};
+ clearInterval(state.timer);$("timer").textContent="∞";$("log").innerHTML="<p><strong>Sistema:</strong> Nueva partida iniciada. La ciudad necesita un Guardián.</p>";
+ $("missionText").textContent="Haz clic en cualquier edificio para comenzar tu primera misión.";
+ $("threatIcon").textContent="⚠️";$("threatName").textContent="Amenazas detectadas";$("threatDesc").textContent="La ciudad necesita tu ayuda.";
+ $("startBtn").textContent="🚀 Comenzar misión";$("startBtn").onclick=()=>toast("Selecciona primero un edificio.");
+ document.querySelector(".city").classList.remove("pulse");render();
+}
+document.querySelectorAll(".building").forEach(b=>b.addEventListener("click",()=>openMission(b.dataset.zone)));
+$("closeBtn").onclick=()=>$("overlay").style.display="none";
+$("resetBtn").onclick=()=>{if(confirm("¿Seguro que quieres reiniciar toda la partida?"))reset()};
+renderGlossary();
+$("glossaryBtn").onclick=()=>{$("glossaryOverlay").style.display="flex"};
+$("glossaryClose").onclick=()=>{$("glossaryOverlay").style.display="none"};
+reset();
+</script>
+</body>
+</html>
